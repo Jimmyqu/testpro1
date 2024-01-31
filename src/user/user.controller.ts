@@ -1,31 +1,39 @@
-import { Controller, Delete, Get, Param } from '@nestjs/common';
-// import { CreateUserDto } from './dto/create-user.dto';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { Controller, Get, Param, Post, Body, Query } from '@nestjs/common';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { UserService } from './user.service';
-import { User } from './user.entity';
+import { User_prisma } from '@prisma/client';
 
 @Controller('users')
 export class UserController {
   constructor(private readonly UserService: UserService) {}
 
-  //   @Post()
-  //   create(@Body() createUserDto: CreateUserDto): Promise<any> {
-  //     // return 1;
-  //     return this.UserService.create(createUserDto);
-  //   }
-
-  @Get()
-  findAll(): Promise<User[]> {
-    return this.UserService.findAll();
+  @Post('create')
+  create(@Body() createUserDto) {
+    return this.UserService.createUser(createUserDto);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: number): Promise<User> {
-    return this.UserService.findOne(id);
+  @Get('allList')
+  findAll(
+    @Query('skip') skip: number,
+    @Query('take') take: number,
+  ): Promise<User_prisma[]> {
+    return this.UserService.users({
+      skip,
+      take,
+    });
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string): Promise<void> {
-    return this.UserService.remove(id);
+  @Get('info')
+  findOne(
+    @Query('id') id: number,
+    // @Query('name') name: string,
+  ): Promise<User_prisma> {
+    return this.UserService.user({ id: +id });
   }
+
+  // @Post('del')
+  // remove(@Body() req) {
+  //   return this.UserService.deleteUser(req.id);
+  // }
 }

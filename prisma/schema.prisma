@@ -1,0 +1,27 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model post_prisma {
+  id          Int          @id @default(autoincrement())
+  title       String
+  content     String?
+  published   Boolean?     @default(false)
+  authorId    Int?
+  user_prisma user_prisma? @relation(fields: [authorId], references: [id], map: "Post_prisma_authorId_fkey")
+
+  @@index([authorId], map: "Post_prisma_authorId_fkey")
+}
+
+model user_prisma {
+  id          Int           @id @default(autoincrement())
+  email       String        @unique(map: "User_prisma_email_key")
+  name        String
+  password    String
+  post_prisma post_prisma[]
+}
