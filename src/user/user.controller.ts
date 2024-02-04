@@ -24,7 +24,6 @@ export class UserController {
   }
 
   @Get('allList')
-  // @UseGuards(AuthGuard)
   @Roles(Role.Two)
   findAll(
     @Query('skip') skip: number,
@@ -36,15 +35,14 @@ export class UserController {
     });
   }
 
-  // @UseGuards(AuthGuard)
   @Get('info')
   @Roles(Role.One)
   findOne(@Request() req, @Query('id') id: number): Promise<user> {
     return this.UserService.user({ id: +id });
   }
 
-  // @Post('del')
-  // remove(@Body() req) {
-  //   return this.UserService.deleteUser(req.id);
-  // }
+  @Post('del')
+  remove(@Body() req) {
+    return this.UserService.deleteUser({ id: req.id });
+  }
 }
