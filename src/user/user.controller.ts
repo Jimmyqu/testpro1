@@ -1,8 +1,18 @@
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { Controller, Get, Param, Post, Body, Query } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Query,
+  // UseGuards,
+  Request,
+} from '@nestjs/common';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { UserService } from './user.service';
-import { User_prisma } from '@prisma/client';
+// import { AuthGuard } from '../auth/auth.guard';
+import { user } from '@prisma/client';
+import { Roles } from '../role/roles.decorator';
+import { Role } from '../role/role.enum';
 
 @Controller('users')
 export class UserController {
@@ -14,21 +24,22 @@ export class UserController {
   }
 
   @Get('allList')
+  // @UseGuards(AuthGuard)
+  @Roles(Role.Two)
   findAll(
     @Query('skip') skip: number,
     @Query('take') take: number,
-  ): Promise<User_prisma[]> {
+  ): Promise<user[]> {
     return this.UserService.users({
       skip,
       take,
     });
   }
 
+  // @UseGuards(AuthGuard)
   @Get('info')
-  findOne(
-    @Query('id') id: number,
-    // @Query('name') name: string,
-  ): Promise<User_prisma> {
+  @Roles(Role.One)
+  findOne(@Request() req, @Query('id') id: number): Promise<user> {
     return this.UserService.user({ id: +id });
   }
 
