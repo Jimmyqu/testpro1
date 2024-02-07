@@ -58,6 +58,17 @@ export class UserService {
     return firstRow;
   }
 
+  async getPostByAuthorId(
+    userWhereUniqueInput: Prisma.userWhereUniqueInput,
+  ): Promise<user | null> {
+    return this.prisma.user.findUnique({
+      where: userWhereUniqueInput,
+      include: {
+        pos: true, // 包含关联的 Post 表
+      },
+    });
+  }
+
   async updateUser(params: {
     where: Prisma.userWhereUniqueInput;
     data: Prisma.userUpdateInput;

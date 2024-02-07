@@ -45,4 +45,10 @@ export class UserController {
   remove(@Body() req) {
     return this.UserService.deleteUser({ id: req.id });
   }
+
+  @Get('posts')
+  // @Roles(Role.Two)
+  getPostByAuthorId(@Request() req, @Query('id') id: number): Promise<user> {
+    return this.UserService.getPostByAuthorId({ id: +id });
+  }
 }
